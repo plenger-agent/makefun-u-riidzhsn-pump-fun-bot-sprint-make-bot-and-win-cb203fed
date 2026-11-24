@@ -30,13 +30,13 @@ const P = {
   // (~24 s) demands a sustained trend, not a single micro-pump.
   window: 60,
   // Net SOL flowing in (buys minus sells) over the entry window.
-  minNetSol: 1.5,
+  minNetSol: 2.0,
   // Buy trades inside the window.
-  minBuys: 4,
+  minBuys: 5,
   // Distinct wallets buying inside the window.
-  minBuyers: 6,
-  // Price now vs price at the window start: at least +8%, at most +100%.
-  minUp: 0.08,
+  minBuyers: 7,
+  // Price now vs price at the window start: at least +10%, at most +100%.
+  minUp: 0.1,
   maxUp: 1.0,
   // Net inflow in the newer half of the window must be at least this multiple of the
   // older half's: the flow is still accelerating, not stalling.
