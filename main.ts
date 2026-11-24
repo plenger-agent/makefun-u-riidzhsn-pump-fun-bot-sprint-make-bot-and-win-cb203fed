@@ -744,7 +744,9 @@ function checkOrders(result: unknown, bot: Bot): Order[] {
         throw new OrderError(`order ${i}: bad client_id`);
       }
       clientId = o.client_id;
-      if (bot.usedIds.has(clientId) || taken.has(clientId)) {
+      // Ids assigned by Bot.clientId() are already recorded in usedIds by design;
+      // a duplicate is only an id repeated inside this one reply.
+      if (taken.has(clientId)) {
         throw new OrderError(`order ${i}: duplicate client_id ${clientId}`);
       }
     } else {
