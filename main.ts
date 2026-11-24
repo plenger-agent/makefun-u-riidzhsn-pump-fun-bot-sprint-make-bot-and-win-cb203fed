@@ -60,17 +60,19 @@ const P = {
   addIfUp: 0.0,
   // Exits, as multiples of cost.
   stopLoss: 0.9,
-  takeProfit: 1.25,
-  // Trailing stop: arms at +15%, then exits when value falls 8% below its peak.
+  // No fixed take profit: runners are managed by the trailing stop, so a coin
+  // that runs 2-5x is not capped at +25%. The trail is the profit-taker.
+  takeProfit: 10.0,
+  // Trailing stop: arms at +15%, then exits when value falls 10% below its peak.
   trailArm: 1.15,
-  trail: 0.92,
+  trail: 0.9,
   // Fade exit: net SOL over the fade window below this.
   fadeWindow: 30,
   fadeNetSol: -0.5,
   // Exit on any single recorded sell of at least this many SOL.
   bigSellSol: 1.5,
   // Time limit in slots; waived while the position is up at least holdIfUp.
-  maxHold: 2000,
+  maxHold: 3000,
   holdIfUp: 1.1,
   // Slots to wait after an exit before the same curve may be bought again.
   cooldown: 600,
@@ -529,8 +531,11 @@ class Bot {
         meta.peakValue = value;
       }
       if (!reason && meta && !meta.probe) {
+        // Fade and big-sell exits only apply while the position is not yet a
+        // runner: once it is up 10% or more, the trailing stop manages it, so a
+        // brief sell wave does not shake out a coin that is actually running.
         const s = this.windowStats(c);
-        if (s) {
+        if (s && value < (pos.cost * 110n) / 100n) {
           const fadeFrom = this.slot - P.fadeWindow;
           let fadeNet = 0n;
           for (const t of c.tape) {
