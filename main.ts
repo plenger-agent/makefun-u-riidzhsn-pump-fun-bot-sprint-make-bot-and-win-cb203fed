@@ -30,13 +30,13 @@ const P = {
   // (~24 s) demands a sustained trend, not a single micro-pump.
   window: 60,
   // Net SOL flowing in (buys minus sells) over the entry window.
-  minNetSol: 1.0,
+  minNetSol: 1.5,
   // Buy trades inside the window.
   minBuys: 4,
   // Distinct wallets buying inside the window.
-  minBuyers: 5,
-  // Price now vs price at the window start: at least +6%, at most +100%.
-  minUp: 0.06,
+  minBuyers: 6,
+  // Price now vs price at the window start: at least +8%, at most +100%.
+  minUp: 0.08,
   maxUp: 1.0,
   // Net inflow in the newer half of the window must be at least this multiple of the
   // older half's: the flow is still accelerating, not stalling.
@@ -61,7 +61,7 @@ const P = {
   // Add only while the position is not underwater.
   addIfUp: 0.0,
   // Exits, as multiples of cost.
-  stopLoss: 0.9,
+  stopLoss: 0.92,
   takeProfit: 1.2,
   // Trailing stop: arms at +15%, then exits when value falls 8% below its peak.
   trailArm: 1.15,
