@@ -30,19 +30,23 @@ const P = {
   // (~24 s) demands a sustained trend, not a single micro-pump.
   window: 60,
   // Net SOL flowing in (buys minus sells) over the entry window.
-  minNetSol: 1.5,
+  minNetSol: 1.0,
   // Buy trades inside the window.
   minBuys: 4,
   // Distinct wallets buying inside the window.
-  minBuyers: 6,
-  // Price now vs price at the window start: at least +8%, at most +100%.
-  minUp: 0.08,
+  minBuyers: 5,
+  // Price now vs price at the window start: at least +6%, at most +100%.
+  minUp: 0.06,
   maxUp: 1.0,
   // Net inflow in the newer half of the window must be at least this multiple of the
   // older half's: the flow is still accelerating, not stalling.
   accel: 1.0,
   // Price now must sit at least this close to the window high.
   nearHigh: 0.9,
+  // Pullback band: instead of buying at the window high, buy the dip inside an
+  // uptrend — price between 80% and 95% of the window high.
+  pullbackLow: 0.8,
+  pullbackHigh: 0.95,
   // No single wallet may supply more than this share of the window's buy SOL.
   maxBuyerShare: 0.6,
   // Real SOL reserve bounds at entry: liquid enough to trade, far from migration.
@@ -61,7 +65,7 @@ const P = {
   // Add only while the position is not underwater.
   addIfUp: 0.0,
   // Exits, as multiples of cost.
-  stopLoss: 0.92,
+  stopLoss: 0.9,
   takeProfit: 1.2,
   // Trailing stop: arms at +15%, then exits when value falls 8% below its peak.
   trailArm: 1.15,
@@ -490,7 +494,11 @@ class Bot {
     const now = this.priceOf(c);
     const up = now / s.startPrice - 1;
     if (up < P.minUp || up > P.maxUp) return false;
-    if (s.high <= 0 || now < s.high * P.nearHigh) return false;
+    if (s.high <= 0) return false;
+    // Buy the pullback inside the uptrend, not the top of the spike: the price
+    // must have pulled back to 80-95% of the window high while the flow that
+    // built the move is still net positive.
+    if (now < s.high * P.pullbackLow || now > s.high * P.pullbackHigh) return false;
     if (s.oldNet > 0n && s.newNet < (s.oldNet * BigInt(Math.round(P.accel * 100))) / 100n) return false;
     if (s.oldNet <= 0n && s.newNet <= 0n) return false;
     if (s.buySol > 0n && s.topBuyer * 100n > s.buySol * BigInt(Math.round(P.maxBuyerShare * 100))) return false;
