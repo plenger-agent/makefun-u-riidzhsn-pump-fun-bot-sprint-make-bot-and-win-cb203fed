@@ -26,50 +26,51 @@ const U64_MAX = 18_446_744_073_709_551_615n;
 // ---------------------------------------------------------------- tuning
 
 const P = {
-  // Entry window, in slots (a slot is ~0.4 s of chain time).
-  window: 30,
+  // Entry window, in slots (a slot is ~0.4 s of chain time). A 60-slot window
+  // (~24 s) demands a sustained trend, not a single micro-pump.
+  window: 60,
   // Net SOL flowing in (buys minus sells) over the entry window.
-  minNetSol: 0.5,
+  minNetSol: 1.0,
   // Buy trades inside the window.
-  minBuys: 3,
+  minBuys: 4,
   // Distinct wallets buying inside the window.
-  minBuyers: 4,
-  // Price now vs price at the window start: at least +4%, at most +120%.
-  minUp: 0.04,
-  maxUp: 1.2,
+  minBuyers: 5,
+  // Price now vs price at the window start: at least +6%, at most +100%.
+  minUp: 0.06,
+  maxUp: 1.0,
   // Net inflow in the newer half of the window must be at least this multiple of the
   // older half's: the flow is still accelerating, not stalling.
-  accel: 0.8,
+  accel: 1.0,
   // Price now must sit at least this close to the window high.
-  nearHigh: 0.88,
+  nearHigh: 0.9,
   // No single wallet may supply more than this share of the window's buy SOL.
-  maxBuyerShare: 0.7,
+  maxBuyerShare: 0.6,
   // Real SOL reserve bounds at entry: liquid enough to trade, far from migration.
-  minRqSol: 0.5,
+  minRqSol: 1.0,
   maxRqSol: 60,
   // Slots since the CreateEvent before an entry is allowed: skip bundled launches.
-  minAge: 40,
+  minAge: 60,
   // Sizing, in SOL.
   firstBuySol: 0.06,
   addSol: 0.06,
   maxStakeSol: 0.24,
   // Add only once the price is this far above the last buy's decision price.
-  addStep: 0.02,
+  addStep: 0.03,
   // Add only while the position is not underwater.
   addIfUp: 0.0,
   // Exits, as multiples of cost.
-  stopLoss: 0.88,
-  takeProfit: 1.35,
-  // Trailing stop: arms at +20%, then exits when value falls 10% below its peak.
-  trailArm: 1.2,
-  trail: 0.9,
+  stopLoss: 0.9,
+  takeProfit: 1.25,
+  // Trailing stop: arms at +15%, then exits when value falls 8% below its peak.
+  trailArm: 1.15,
+  trail: 0.92,
   // Fade exit: net SOL over the fade window below this.
-  fadeWindow: 20,
-  fadeNetSol: -0.3,
+  fadeWindow: 30,
+  fadeNetSol: -0.5,
   // Exit on any single recorded sell of at least this many SOL.
-  bigSellSol: 1.0,
+  bigSellSol: 1.5,
   // Time limit in slots; waived while the position is up at least holdIfUp.
-  maxHold: 1500,
+  maxHold: 2000,
   holdIfUp: 1.1,
   // Slots to wait after an exit before the same curve may be bought again.
   cooldown: 600,
