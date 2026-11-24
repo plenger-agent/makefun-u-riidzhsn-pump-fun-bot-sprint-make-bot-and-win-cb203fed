@@ -8,7 +8,13 @@ A momentum trading bot for pump.fun-style Solana bonding curves, entered in make
 
 ## Strategy
 
-Watch every fresh curve's tape and buy only mature curves whose recent tape shows accelerating buy pressure from several distinct wallets, with the price sitting near its window high. Start small (0.06 SOL) and pyramid into strength up to 0.24 SOL per coin. Exit whole on a stop loss (-12%), a take profit (+35%), a trailing stop once armed (+20% arm, 10% trail), a fade in flow, a single big sell, or a time limit. Tiny probe round trips (0.02 SOL) guarantee the 20-coin guardrail even on a quiet tape. A drawdown circuit breaker pauses entries past -35% equity and flattens past -45%.
+## Strategy
+
+Buy the pullback inside an uptrend. A curve becomes a buy when it is mature (60+ slots since creation) and its last 60 slots show a real move: net inflow of at least 2 SOL from at least 7 distinct buyers, price up 10-100% over the window with the newer half of the flow still accelerating, no single wallet supplying more than 60% of the buy SOL, and the price pulled back to 80-95% of the window high — never chase the top of the spike. One fixed buy of 0.06 SOL per coin, no pyramiding: on this tape adds buy higher into moves that usually revert.
+
+Exit whole on a stop loss (-10%), a take profit (+20%), a trailing stop once armed (+15% arm, 8% trail), a fade in flow (net -0.5 SOL over 30 slots), a single sell of 1.5+ SOL, or a 2000-slot time limit (waived while up 10%+). Tiny probe round trips (0.02 SOL) guarantee the 20-coin guardrail even on a quiet tape. A drawdown circuit breaker pauses entries past -35% equity and flattens past -45%.
+
+Local dev-grade results (kit `grade-local`, process driver, dev window of 1,222 coins): the shipped parameters are variant H, selected over 8 graded variants (A -0.96 SOL, B -0.64, D -0.55, F -0.45, G -0.38, H -0.30, I -0.35; the house momentum pilot scores -9.46 SOL on the same window). Variant H: net PnL -0.30 SOL (-3.0%), 313 fills, 139 distinct coins, 156 round trips, 25.6% win rate, 3.0% max drawdown — comfortably inside every guardrail, with the loss driven mostly by per-trade fees on a tape where most moves revert. The final window is fresh coins recorded after entries close, so no dev-window number is a forecast; the parameters were picked for selectivity and small, capped risk, not for a single best dev cell.
 
 ## Run it
 
